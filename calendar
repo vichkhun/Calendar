@@ -1,0 +1,47 @@
+//delete and add events to calendar
+function addEvents() {
+  
+  //open the event calendar
+  var calenDar = CalendarApp.getCalendarById("ใส่ปฏิทิน ID");
+  var spreadSheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  //pull information into the code, in a form that the code can understand
+  var lastRow = spreadSheet.getLastRow();
+  var data = spreadSheet.getRange("A2:E" + lastRow).getValues();
+  
+  /**
+  [
+    [event-1, start time-1, end time-1, location-1, description-1],
+    [event-2, start time-2, end time-2, location-2, description-2],
+    ..............................................................,
+    [event-n, start time-n, end time-n, location-n, description-n]
+  ]
+  **/
+  
+  //delete events
+  var lastDateOfYear = new Date(new Date().getFullYear(), 11, 31); // JavaScript counts months from 0 to 11. January is 0. December is 11.
+  //Logger.log(lastDateOfYear)
+  var events = calenDar.getEvents(new Date(), lastDateOfYear); // new Date() = today
+  for (var i = 0; i < events.length; i++) {
+    var eventsDelete = events[i];
+    eventsDelete.deleteEvent();
+    
+  }
+  
+  //add events
+  for(var i = 0; i < data.length; i++) {
+    var title = data[i][0];
+    var startTime = data[i][1];
+    //Logger.log(startTime);
+    var endTime = data[i][2];
+    var location = data[i][3];
+    var description = data[i][4];
+    
+    calenDar.createEvent(title, startTime, endTime, {location: location, description: description}); //(Title, Start Time, End Time, {options})
+    //calenDar.createEvent(data[i][0], data[i][1], data[i][2], {location: data[i][3], description: data[i][4]}); //(Title, Start Time, End Time, {options})
+    
+  }
+}
+
+
+
